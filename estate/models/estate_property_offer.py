@@ -11,9 +11,11 @@ class EstatePropertyOffer(models.Model):
     price = fields.Float(string="Price")
     state = fields.Selection([('accepted', 'Accepted'), ('refused', 'Refused')], string="Status", copy=False)
     partner_id = fields.Many2one('res.partner', string='Partner', required=True)
-    property_id = fields.Many2one('estate.property', string='Property', required=True)
+    property_id = fields.Many2one('estate.property', string='Property', required=True, copy=False)
     validity = fields.Integer(string='Validity (Days)', default=7)
     date_deadline = fields.Date(string='Deadline', compute='_compute_date_deadline', inverse='_inverse_date_deadline')
+
+    _sql_constraints = [('positive_offer_price', 'check(price >= 0)', 'The offer price must be strictly positive.'),]
 
     @api.depends('validity', 'create_date')
     def _compute_date_deadline(self):

@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 
 from odoo import fields, models, api, _
 from odoo.exceptions import UserError, ValidationError
+from odoo.tools.float_utils import float_compare, float_is_zero, float_round
 
 
 class EstateProperty(models.Model):
@@ -34,6 +35,17 @@ class EstateProperty(models.Model):
     offer_ids = fields.One2many('estate.property.offer', 'property_id', string='Offers')
     total_area = fields.Float(string='Total Area (sqm)', compute='_compute_total_area')
     best_offer = fields.Float(string='Best Offer', compute='_compute_best_offer')
+
+    _sql_constraints = [('positive_expected_price', 'check(expected_price >= 0)', 'The expected price must be strictly positive.'),
+                        ('positive_selling_price', 'check(selling_price >= 0)', 'The selling price must be strictly positive.')]
+
+    @api.constrains('selling_price', 'expected_price')
+    def check_selling_price(self):
+        for rec in self:
+            if (rec.offer_ids.filtered(lambda offer: offer.state == 'accepted') and
+                    float_compare(rec.selling_price, ((90 * rec.expected_price) / 100), precision_rounding=2) < 0):
+                raise ValidationError(_('The Selling price must be at least 90% of the expected price! '
+                                        'You must reduce the expected price if you want to accept this offer.'))
 
     @api.depends('living_area', 'garden_area')
     def _compute_total_area(self):
