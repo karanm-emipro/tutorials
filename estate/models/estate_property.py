@@ -8,6 +8,7 @@ from odoo.tools.float_utils import float_compare, float_is_zero, float_round
 class EstateProperty(models.Model):
     _name = "estate.property"
     _description = "Estate Property"
+    _order = 'id desc'
 
     name = fields.Char(string='Title', required=True)
     active = fields.Boolean(string='Active', default=True)
@@ -47,6 +48,11 @@ class EstateProperty(models.Model):
                 raise ValidationError(_('The Selling price must be at least 90% of the expected price! '
                                         'You must reduce the expected price if you want to accept this offer.'))
 
+    @api.ondelete(at_uninstall=False)
+    def _unlink_if_new_or_cancelled_record(self):
+        if any(rec.state not in ('new', 'cancel') for rec in self):
+            raise UserError(_('Only new and cancelled properties can be deleted.'))
+
     @api.depends('living_area', 'garden_area')
     def _compute_total_area(self):
         for rec in self:
@@ -58,9 +64,14 @@ class EstateProperty(models.Model):
             rec.best_offer = rec.offer_ids and max(rec.offer_ids.mapped('price')) or 0
 
     @api.onchange('garden')
-    def onchange_method(self):
+    def _onchange_method(self):
         self.garden_area = self.garden and 10 or 0
         self.garden_orientation = self.garden and 'north' or False
+
+    # @api.onchange('offer_ids')
+    # def _onchange_offer_ids(self):
+    #     if len(self.offer_ids) > 0 and self.state == 'new':
+    #         self.state = 'offer_received'
 
     def action_sold(self):
         if self.state == 'cancel':
