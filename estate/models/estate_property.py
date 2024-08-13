@@ -37,8 +37,8 @@ class EstateProperty(models.Model):
     total_area = fields.Float(string='Total Area (sqm)', compute='_compute_total_area')
     best_offer = fields.Float(string='Best Offer', compute='_compute_best_offer')
 
-    _sql_constraints = [('positive_expected_price', 'check(expected_price >= 0)', 'The expected price must be strictly positive.'),
-                        ('positive_selling_price', 'check(selling_price >= 0)', 'The selling price must be strictly positive.')]
+    _sql_constraints = [('positive_expected_price', 'check(expected_price > 0)', 'The expected price must be strictly positive.'),
+                        ('positive_selling_price', 'check(selling_price > 0)', 'The selling price must be strictly positive.')]
 
     @api.constrains('selling_price', 'expected_price')
     def check_selling_price(self):
@@ -68,14 +68,11 @@ class EstateProperty(models.Model):
         self.garden_area = self.garden and 10 or 0
         self.garden_orientation = self.garden and 'north' or False
 
-    # @api.onchange('offer_ids')
-    # def _onchange_offer_ids(self):
-    #     if len(self.offer_ids) > 0 and self.state == 'new':
-    #         self.state = 'offer_received'
-
     def action_sold(self):
         if self.state == 'cancel':
             raise UserError(_('Cancelled properties cannot be sold.'))
+        if 'accepted' not in self.offer_ids.mapped('state'):
+            raise UserError(_('No offer is accepted. Please accept a offer before selling a property.'))
         self.state = 'sold'
 
     def action_cancel(self):

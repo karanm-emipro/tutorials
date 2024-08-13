@@ -98,6 +98,49 @@
         </field>
     </record>
 
+    <record id="view_estate_properties_kanban" model="ir.ui.view">
+        <field name="name">estate.properties.kanban</field>
+        <field name="model">estate.property</field>
+        <field name="arch" type="xml">
+            <kanban string="Properties" default_group_by="property_type_id" records_draggable="0">
+                <field name="name"/>
+                <field name="expected_price"/>
+                <field name="best_offer"/>
+                <field name="selling_price"/>
+                <field name="state"/>
+                <field name="property_tag_ids"/>
+                <template>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="name"/>
+                                    </strong>
+                                </div>
+                                <div>Expected Price:
+                                    <t t-esc="record.expected_price.value"/>
+                                </div>
+                                <div t-if="record.state.raw_value == 'offer_received'">Best Offer:
+                                    <t t-esc="record.best_offer.value"/>
+                                </div>
+                                <div t-if="record.state.raw_value == 'offer_accepted'">Selling Price:
+                                    <t t-esc="record.selling_price.value"/>
+                                </div>
+                                <div t-if="record.state.raw_value == 'sold'">Selling Price:
+                                    <t t-esc="record.selling_price.value"/>
+                                </div>
+                                <div>
+                                    <field name="property_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </template>
+            </kanban>
+        </field>
+    </record>
+
     <record id="view_estate_properties_search" model="ir.ui.view">
         <field name="name">estate.properties.search</field>
         <field name="model">estate.property</field>
@@ -123,7 +166,7 @@
         <field name="name">Properties</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">estate.property</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">kanban,tree,form</field>
         <field name="context">{'search_default_available': True}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">

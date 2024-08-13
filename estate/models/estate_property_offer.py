@@ -30,9 +30,6 @@ class EstatePropertyOffer(models.Model):
             property_id and property_id.state == 'new' and property_id.update({'state': 'offer_received'})
         return super().create(vals_list)
 
-    def change_property_state(self, property_id):
-        pass
-
     @api.depends('validity', 'create_date')
     def _compute_date_deadline(self):
         for rec in self:
