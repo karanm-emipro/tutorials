@@ -1,7 +1,7 @@
 {
     # App Information
     'name': 'Real Estate',
-    'version': '1.0',
+    'version': '2.0',
     'summary': 'Real Estate Module',
     'category': 'Hidden',
     'license': 'LGPL-3',

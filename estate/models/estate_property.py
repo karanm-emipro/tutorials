@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from odoo import fields, models, api, _
 from odoo.exceptions import UserError, ValidationError
-from odoo.tools.float_utils import float_compare, float_is_zero, float_round
+from odoo.tools.float_utils import float_compare
 
 
 class EstateProperty(models.Model):
@@ -37,8 +37,19 @@ class EstateProperty(models.Model):
     total_area = fields.Float(string='Total Area (sqm)', compute='_compute_total_area')
     best_offer = fields.Float(string='Best Offer', compute='_compute_best_offer')
 
-    _sql_constraints = [('positive_expected_price', 'check(expected_price > 0)', 'The expected price must be strictly positive.'),
-                        ('positive_selling_price', 'check(selling_price > 0)', 'The selling price must be strictly positive.')]
+    _sql_constraints = [
+        ('positive_expected_price', 'check(expected_price > 0)', 'The expected price must be strictly positive.'),
+        ('positive_selling_price', 'check(selling_price > 0)', 'The selling price must be strictly positive.')]
+
+    @api.depends('living_area', 'garden_area')
+    def _compute_total_area(self):
+        for rec in self:
+            rec.total_area = rec.living_area + rec.garden_area
+
+    @api.depends('offer_ids')
+    def _compute_best_offer(self):
+        for rec in self:
+            rec.best_offer = rec.offer_ids and max(rec.offer_ids.mapped('price')) or 0
 
     @api.constrains('selling_price', 'expected_price')
     def check_selling_price(self):
@@ -53,20 +64,14 @@ class EstateProperty(models.Model):
         if any(rec.state not in ('new', 'cancel') for rec in self):
             raise UserError(_('Only new and cancelled properties can be deleted.'))
 
-    @api.depends('living_area', 'garden_area')
-    def _compute_total_area(self):
-        for rec in self:
-            rec.total_area = rec.living_area + rec.garden_area
-
-    @api.depends('offer_ids')
-    def _compute_best_offer(self):
-        for rec in self:
-            rec.best_offer = rec.offer_ids and max(rec.offer_ids.mapped('price')) or 0
-
     @api.onchange('garden')
     def _onchange_method(self):
-        self.garden_area = self.garden and 10 or 0
-        self.garden_orientation = self.garden and 'north' or False
+        if self.garden:
+            self.garden_area = 10
+            self.garden_orientation = 'north'
+        else:
+            self.garden_area = 0
+            self.garden_orientation = False
 
     def action_sold(self):
         if self.state == 'cancel':

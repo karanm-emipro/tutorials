@@ -17,7 +17,16 @@ class EstatePropertyOffer(models.Model):
     date_deadline = fields.Date(string='Deadline', compute='_compute_date_deadline', inverse='_inverse_date_deadline')
     property_type_id = fields.Many2one('estate.property.type', related="property_id.property_type_id", store=True)
 
-    _sql_constraints = [('positive_offer_price', 'check(price >= 0)', 'The offer price must be strictly positive.'),]
+    _sql_constraints = [('positive_offer_price', 'check(price >= 0)', 'The offer price must be strictly positive.')]
+
+    @api.depends('validity', 'create_date')
+    def _compute_date_deadline(self):
+        for rec in self:
+            rec.date_deadline = ((rec.create_date or datetime.now()) + timedelta(days=rec.validity)).date()
+
+    def _inverse_date_deadline(self):
+        for rec in self:
+            rec.validity = (rec.date_deadline - (rec.create_date or datetime.now()).date()).days
 
     def create(self, vals_list):
         if isinstance(vals_list, dict):
@@ -29,15 +38,6 @@ class EstatePropertyOffer(models.Model):
                 raise UserError(_(f'The offer must be higher than {min_price}'))
             property_id and property_id.state == 'new' and property_id.update({'state': 'offer_received'})
         return super().create(vals_list)
-
-    @api.depends('validity', 'create_date')
-    def _compute_date_deadline(self):
-        for rec in self:
-            rec.date_deadline = ((rec.create_date or datetime.now()) + timedelta(days=rec.validity)).date()
-
-    def _inverse_date_deadline(self):
-        for rec in self:
-            rec.validity = (rec.date_deadline - (rec.create_date or datetime.now()).date()).days
 
     def action_accept(self):
         if self.property_id.offer_ids.filtered(lambda offer: offer.state == 'accepted'):

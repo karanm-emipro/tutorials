@@ -1,7 +1,7 @@
 {
     # App Information
     'name': 'Real Estate Invoicing',
-    'version': '1.0',
+    'version': '1.1',
     'summary': 'Real Estate Invoicing Module',
     'category': 'Hidden',
     'license': 'LGPL-3',
