@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
 from odoo import fields, models, api, _
+from odoo import SUPERUSER_ID
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools.float_utils import float_compare
 
@@ -9,6 +10,14 @@ class EstateProperty(models.Model):
     _name = "estate.property"
     _description = "Estate Property"
     _order = 'id desc'
+
+    @api.model
+    def _read_group_type_ids(self, types, domain, order):
+        if types.ids:
+            type_ids = types._search([('id', 'in', types.ids)], order=order, access_rights_uid=SUPERUSER_ID)
+        else:
+            type_ids = types._search([], limit=1, order=order, access_rights_uid=SUPERUSER_ID)
+        return types.browse(type_ids)
 
     name = fields.Char(string='Title', required=True)
     active = fields.Boolean(string='Active', default=True)
@@ -29,7 +38,7 @@ class EstateProperty(models.Model):
     garden_area = fields.Integer(string='Garden Area (sqm)', )
     garden_orientation = fields.Selection([('north', 'North'), ('south', 'South'),
                                            ('east', 'East'), ('west', 'West')], string='Garden Orientation', )
-    property_type_id = fields.Many2one('estate.property.type', string='Property Type', reqired=True)
+    property_type_id = fields.Many2one('estate.property.type', string='Property Type', reqired=True, group_expand='_read_group_type_ids')
     partner_id = fields.Many2one('res.partner', string='Buyer', reqired=True, copy=False)
     user_id = fields.Many2one('res.users', string='Salesman', reqired=True, default=lambda self: self._uid)
     property_tag_ids = fields.Many2many('estate.property.tag', string="Tags")

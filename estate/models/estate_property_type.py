@@ -12,7 +12,7 @@ class EstatePropertyType(models.Model):
     offer_ids = fields.One2many('estate.property.offer', 'property_type_id', string='Offers')
     offer_count = fields.Integer('Offers Count', compute='_compute_offers_count')
 
-    _sql_constraints = [('unique_property_type', 'unique(name)', 'Property house must be unique.')]
+    _sql_constraints = [('unique_property_type', 'unique(name)', 'Property type must be unique.')]
 
     def _compute_offers_count(self):
         for rec in self:

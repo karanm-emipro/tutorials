@@ -106,7 +106,7 @@
         <field name="name">estate.properties.kanban</field>
         <field name="model">estate.property</field>
         <field name="arch" type="xml">
-            <kanban string="Properties" default_group_by="property_type_id" records_draggable="0">
+            <kanban string="Properties" records_draggable="0" quick_create="False" default_group_by="property_type_id" group_create="False">
                 <field name="name"/>
                 <field name="expected_price"/>
                 <field name="best_offer"/>
@@ -172,6 +172,7 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">estate.property</field>
         <field name="view_mode">kanban,tree,form</field>
+        <field name="search_view_id" ref="estate.view_estate_properties_search"/>
         <field name="context">{'search_default_available': True}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
