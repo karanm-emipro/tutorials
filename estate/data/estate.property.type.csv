@@ -1,0 +1,5 @@
+id,name
+estate_property_type_house,House
+estate_property_type_apartment,Apartment
+estate_property_type_castle,Castle
+estate_property_type_villa,Villa

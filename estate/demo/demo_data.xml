@@ -1,9 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="True">
+        <!--    Property Tags   -->
+        <record id="estate_property_tag_new" model="estate.property.tag">
+            <field name="name">New</field>
+        </record>
+
+        <record id="estate_property_tag_renovated" model="estate.property.tag">
+            <field name="name">Renovated</field>
+        </record>
+
+        <record id="estate_property_tag_cozy" model="estate.property.tag">
+            <field name="name">Cozy</field>
+        </record>
+
+        <!--    Properties   -->
         <record id="estate_property_record_big_villa" model="estate.property">
             <field name="name">Big Villa</field>
             <field name="state">new</field>
+            <field name="property_type_id" ref="estate_property_type_villa"/>
+            <field name="property_tag_ids" eval="[(4, ref('estate_property_tag_new')), (4, ref('estate_property_tag_cozy'))]"/>
             <field name="description">A nice and big villa</field>
             <field name="postcode">12345</field>
             <field name="date_availability">2020-02-02</field>
@@ -15,11 +31,29 @@
             <field name="garden">True</field>
             <field name="garden_area">100000</field>
             <field name="garden_orientation">south</field>
+            <field name="user_id" ref="base.user_admin"/>
+        </record>
+
+        <record id="estate_property_record_apartment" model="estate.property">
+            <field name="name">New Apartment</field>
+            <field name="state">new</field>
+            <field name="property_type_id" ref="estate_property_type_apartment"/>
+            <field name="property_tag_ids" eval="[(4, ref('estate_property_tag_new'))]"/>
+            <field name="description">A new apartment flat</field>
+            <field name="postcode">12345</field>
+            <field name="date_availability">2021-05-07</field>
+            <field name="expected_price">160000</field>
+            <field name="bedrooms">1</field>
+            <field name="living_area">20</field>
+            <field name="facades">1</field>
+            <field name="user_id" ref="base.user_admin"/>
         </record>
 
         <record id="estate_property_record_trailer_home" model="estate.property">
             <field name="name">Trailer home</field>
             <field name="state">cancel</field>
+            <field name="property_type_id" ref="estate_property_type_house"/>
+            <field name="property_tag_ids" eval="[(4, ref('estate_property_tag_renovated')), (4, ref('estate_property_tag_cozy'))]"/>
             <field name="description">Home in a trailer park</field>
             <field name="postcode">54321</field>
             <field name="date_availability">1970-01-01</field>
@@ -29,8 +63,29 @@
             <field name="living_area">10</field>
             <field name="facades">4</field>
             <field name="garage">False</field>
+            <field name="user_id" ref="base.user_admin"/>
         </record>
 
+        <record id="estate_property_record_castle" model="estate.property">
+            <field name="name">Castle</field>
+            <field name="state">new</field>
+            <field name="property_type_id" ref="estate_property_type_castle"/>
+            <field name="property_tag_ids" eval="[(4, ref('estate_property_tag_renovated')), (4, ref('estate_property_tag_cozy'))]"/>
+            <field name="description">A big castle</field>
+            <field name="postcode">25263</field>
+            <field name="date_availability">2024-05-02</field>
+            <field name="expected_price">2000000</field>
+            <field name="bedrooms">5</field>
+            <field name="living_area">120</field>
+            <field name="facades">4</field>
+            <field name="garage">True</field>
+            <field name="garden">True</field>
+            <field name="garden_area">250000</field>
+            <field name="garden_orientation">north</field>
+            <field name="user_id" ref="base.user_admin"/>
+        </record>
+
+        <!--    Property Offers   -->
         <record id="estate_property_offer_big_villa_azure_1" model="estate.property.offer">
             <field name="property_id" ref="estate_property_record_big_villa"/>
             <field name="partner_id" ref="base.res_partner_12"/>
@@ -50,6 +105,20 @@
             <field name="partner_id" ref="base.res_partner_2"/>
             <field name="price">1500001</field>
             <field name="validity">14</field>
+        </record>
+
+        <record id="estate_property_offer_castle_azure" model="estate.property.offer">
+            <field name="property_id" ref="estate_property_record_castle"/>
+            <field name="partner_id" ref="base.res_partner_12"/>
+            <field name="price">1900000</field>
+            <field name="validity">5</field>
+        </record>
+
+        <record id="estate_property_offer_castle_deco" model="estate.property.offer">
+            <field name="property_id" ref="estate_property_record_castle"/>
+            <field name="partner_id" ref="base.res_partner_2"/>
+            <field name="price">2500000</field>
+            <field name="validity">10</field>
         </record>
     </data>
 </odoo>

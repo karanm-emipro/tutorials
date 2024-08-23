@@ -14,7 +14,9 @@
     'depends': ['account', 'estate'],
 
     # Views
-    'data': [],
+    'data': [
+        'report/estate_property_templates.xml',
+    ],
 
     # Technical
     'installable': True,

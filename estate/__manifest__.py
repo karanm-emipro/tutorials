@@ -13,7 +13,7 @@
     # Dependencies
     'depends': ['base'],
 
-    # Views
+    # Views and Data
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
@@ -25,6 +25,12 @@
         'views/res_users_views.xml',
         'views/estate_menus.xml',
 
+        'report/estate_property_templates.xml',
+        'report/ir_action_reports.xml',
+
+        'data/estate.property.type.csv',
+    ],
+    'demo': [
         'demo/demo_data.xml'
     ],
 

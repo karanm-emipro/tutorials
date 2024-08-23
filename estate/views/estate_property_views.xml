@@ -128,10 +128,7 @@
                                 <div t-if="record.state.raw_value == 'offer_received'">Best Offer:
                                     <t t-esc="record.best_offer.value"/>
                                 </div>
-                                <div t-if="record.state.raw_value == 'offer_accepted'">Selling Price:
-                                    <t t-esc="record.selling_price.value"/>
-                                </div>
-                                <div t-if="record.state.raw_value == 'sold'">Selling Price:
+                                <div t-if="record.selling_price.raw_value">Selling Price:
                                     <t t-esc="record.selling_price.value"/>
                                 </div>
                                 <div>
