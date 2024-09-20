@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_record_public_tree" model="ir.ui.view">
+        <field name="name">record.public.tree</field>
+        <field name="model">record.public</field>
+        <field name="arch" type="xml">
+            <tree string="Property Tag">
+                <field name="info"/>
+                <field name="company_info"/>
+                <field name="display_info"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_record_public_from" model="ir.ui.view">
+        <field name="name">record.public.form</field>
+        <field name="model">record.public</field>
+        <field name="arch" type="xml">
+            <form string="Property Tag">
+                <sheet>
+                    <group>
+                        <field name="info"/>
+                        <field name="company_info"/>
+                        <field name="display_info"/>
+                    </group>
+                    <notebook>
+                        <page string="Other Info">
+                            <group>
+                                <group>
+                                    <field name="id" invisible="True"/>
+                                    <field name="company_id" options="{'no_create': True}"
+                                           groups="base.group_multi_company"/>
+                                    <field name="company_id" invisible="1"/>
+                                    <field name="property_id" options="{'no_create': True}"/>
+                                </group>
+                                <group>
+                                    <field name="parent_id" options="{'no_create': True}" domain="[('id', '!=', id)]"/>
+                                    <field name="parent_path" readonly="True"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Child Records">
+                            <field name="child_ids" readonly="True"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_record_public_search" model="ir.ui.view">
+        <field name="name">record.public.search</field>
+        <field name="model">record.public</field>
+        <field name="arch" type="xml">
+            <search string="Property Tag">
+                <field name="info" filter_domain="[('name', 'ilike', self)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="record_public_action" model="ir.actions.act_window">
+        <field name="name">Record Public</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">record.public</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No records are available to show.
+            </p>
+        </field>
+    </record>
+</odoo>

@@ -46,9 +46,12 @@ class EstatePropertyOffer(models.Model):
         if self.property_id.offer_ids.filtered(lambda offer: offer.state == 'accepted'):
             raise UserError(_('One offer is already accepted.'))
         self.write({'state': 'accepted'})
+        self.property_id.message_post(body=f"{self.partner_id.name}'s offer is accepted with price {self.price}",
+                                      message_type='notification')
         return self.property_id.write({'selling_price': self.price,
                                        'partner_id': self.partner_id.id,
                                        'state': 'offer_accepted'})
 
     def action_refuse(self):
+        self.property_id.message_post(body=f"{self.partner_id.name}'s offer is refused", message_type='notification')
         return self.write({'state': 'refused'})

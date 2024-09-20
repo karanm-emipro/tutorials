@@ -8,6 +8,7 @@ from odoo.tools.float_utils import float_compare
 
 class EstateProperty(models.Model):
     _name = "estate.property"
+    _inherit = ['mail.thread']
     _description = "Estate Property"
     _order = 'id desc'
 
@@ -89,8 +90,10 @@ class EstateProperty(models.Model):
         if 'accepted' not in self.offer_ids.mapped('state'):
             raise UserError(_('No offer is accepted. Please accept a offer before selling a property.'))
         self.state = 'sold'
+        self.message_post(body=f"Property sold to {self.partner_id.name}", message_type='notification')
 
     def action_cancel(self):
         if self.state == 'sold':
             raise UserError(_('Cannot cancel sold properties.'))
         self.state = 'cancel'
+        self.message_post(body="This property is no longer available for sale", message_type='notification')

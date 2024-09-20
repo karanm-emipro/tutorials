@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <!--    Root Menu   -->
-    <menuitem name="Real Estate" id="real_estate_menu_root"/>
+    <menuitem name="Real Estate" id="real_estate_menu_root" web_icon="estate,static/description/icon.png"/>
 
     <!--    Sub Menu Advertisement-->
     <menuitem name="Advertisement" id="real_estate_sub_menu_advertisement" parent="real_estate_menu_root">
@@ -12,5 +12,6 @@
     <menuitem name="Settings" id="real_estate_sub_menu_settings" parent="real_estate_menu_root" groups="estate.estate_group_manager">
         <menuitem name="Property Type" id="real_estate_sub_menu_child_property_type" action="estate_property_type_action"/>
         <menuitem name="Property Tags" id="real_estate_sub_menu_child_property_tag" action="estate_property_tag_action"/>
+        <menuitem name="Record Public" id="real_estate_sub_menu_child_record_public" action="record_public_action"/>
     </menuitem>
 </odoo>
